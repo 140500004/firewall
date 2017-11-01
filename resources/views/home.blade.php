@@ -38,7 +38,7 @@
                             </samp>
 
                             <samp href="#" class="list-group-item">
-                                <i class="fa fa-tasks fa-fw"></i> SO
+                                <i class="fa fa-tasks fa-fw"></i> S.O
                                 <span class="pull-right text-muted small"><em> Debian Jessie 8.9 - GNU/Linux</em>
                                     </span>
                             </samp>

@@ -47,18 +47,19 @@ Route::group(['middleware' => 'auth'], function(){
     Route::resource('ip', 'IpController');
 
 
-    Route::get('/script', function()
-    {
+    Route::get('/logs', function(){
+        return View::make('logs');
+    });
+
+    Route::get('/script', function(){
         return View::make('webService');
     });
 
-    Route::get('/relatorio', function()
-    {
+    Route::get('/relatorio', function(){
         return View::make('relatorio');
     });
 
-    Route::get('/ajustes', function()
-    {
+    Route::get('/ajustes', function(){
         return View::make('ajustes');
     });
 

@@ -70,6 +70,10 @@
                                     <a href="{{ url ('ajustes') }}"> Ajustes</a>
                                 </li>
 
+                                <li {{ (Request::is('*logs') ? 'class="active"' : '') }}>
+                                    <a href="{{ url ('logs') }}"> Logs do Squid</a>
+                                </li>
+
                             </ul>
                         </li>
                     </ul>
