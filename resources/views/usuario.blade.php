@@ -104,8 +104,6 @@
                     {{ Form::close() }}
                 </div>
 
-
-
             <hr>
             @if(empty($Regras))
                 <div class="alert alert-danger"> Nenhuma regra cadastrada, faça primeiro o cadastro da regra. </div>

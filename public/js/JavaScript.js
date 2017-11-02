@@ -15,9 +15,6 @@ function removerUsuario(){
     document.getElementById('modal_delete_usuario').action = 'http://192.168.2.1/usuario/'+ id;
 }
 
-// $(document).ready(function(){
-//     $('[data-toggle="Novo Usuario"]').tooltip();
-// });
-
-$ ->
-$('[data-toggle="tooltip"]').tooltip()
+$(document).ready(function(){
+     $("[data-tt=tooltip]").tooltip();
+});

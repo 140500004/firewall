@@ -51,6 +51,9 @@ Route::group(['middleware' => 'auth'], function(){
         return View::make('usuario');
     });
 
+    Route::get('/geral', function(){
+        return View::make('regrasgeral');
+    });
 
     Route::get('/logs', function(){
         return View::make('logs');

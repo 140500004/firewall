@@ -10,8 +10,7 @@
                 <button type="button" class="btn btn-default disabled fa fa-sitemap"> <strong>  SERVER.COM </strong> </button>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default fa fa-users" data-toggle="modal" data-target="#ModalNovoGrupo"> Novo Grupo</button>
-                    <button type="button" class="btn btn-default fa fa-file-text" data-toggle="modal" data-target="#ModalRegrasGeral"> Regras Geral</button>
-                    <button type="button" class="btn btn-default fa fa-list-alt" data-toggle="modal" data-target="#ModalListaRegras"> Lista Regra Geral</button>
+                    <a class="btn btn-default btn btn-default fa fa-file-text" data-tt="tooltip" title="Regras do Grupo" href="{{ route('regras.index') }}"> Regras Geral</a>
                 </div>
             </div>
             <div class="panel-body">
@@ -66,10 +65,9 @@
                                         <button type="button" class="btn btn-default disabled fa fa-users" > <strong> {{$g->nome}} </strong></button>
                                     </a>
                                     <div class="pull-right">
-                                        <button type="button" class="btn btn-default fa fa-user-plus" data-toggle="tooltip" title="Novo Usuario!" onclick="grupousuario( '{{$g->id_grupo}}', '{{$g->nome}}')" data-toggle="modal" data-target="#ModalNovoUsuario"> </button> <!-- Novo Usuario -->
-                                        <button type="button" class="btn btn-default fa fa-file-excel-o" data-toggle="modal" data-target="#ModalRegrasGrupo"> </button> <!-- Regras Para Grupo-->
-                                        <button type="button" class="btn btn-default fa fa-trash" onclick="removerGrupo( '{{$g->id_grupo}}', '{{$g->nome}}')" data-toggle="modal" data-target="#ModalRemoveGrupo"> </button>
-                                        <button type="button" class="btn btn-default fa fa-list-alt" data-toggle="modal" data-target="#ModalListaRegrasGrupo"> </button>
+                                        <button type="button" class="btn btn-default fa fa-user-plus" data-tt="tooltip" title="Novo Usuario" onclick="grupousuario( '{{$g->id_grupo}}', '{{$g->nome}}')" data-toggle="modal" data-target="#ModalNovoUsuario"> </button> <!-- Novo Usuario -->
+                                        <a class="btn btn-default fa fa-file-excel-o" data-tt="tooltip" title="Regras do Grupo {{ $g->nome }}" href="{{ url('regras',$g->id_grupo) }}"> </a>
+                                        <button type="button" class="btn btn-default fa fa-trash" data-tt="tooltip" title="Remove Grupo {{ $g->nome }}" onclick="removerGrupo( '{{$g->id_grupo}}', '{{$g->nome}}')" data-toggle="modal" data-target="#ModalRemoveGrupo"> </button> <!-- Remover o Grupo-->
                                     </div>
                                 </h4>
                             </div>

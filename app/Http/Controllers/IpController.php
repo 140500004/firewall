@@ -17,6 +17,7 @@ class IpController extends Controller {
 
 	public function index(Ip $ip){
         $ips = $ip->paginate(6);
+
         return view('ip', compact('ips'));
 	}
 
