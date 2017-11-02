@@ -50,7 +50,7 @@
                         </li>
 
                         <li {{ (Request::is('*activedirectory') ? 'class="active"' : '') }}>
-                            <a href="{{ url ('activedirectory') }}"><i class="fa fa-sitemap fa-fw"></i> Active Directory</a>
+                            <a href="{{ url ('activedirectory') }}"><i class="fa fa-sitemap fa-fw"></i> Gerenciamento</a>
                             <!-- /.nav-second-level -->
                         </li>
 

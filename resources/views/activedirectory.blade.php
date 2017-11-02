@@ -1,5 +1,5 @@
 @extends('layouts.dashboard')
-@section('page_heading','Active Directory')
+@section('page_heading','Gerenciamento ')
 @section('section')
 @include('modal')
 
@@ -10,11 +10,8 @@
                 <button type="button" class="btn btn-default disabled fa fa-sitemap"> <strong>  SERVER.COM </strong> </button>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default fa fa-users" data-toggle="modal" data-target="#ModalNovoGrupo"> Novo Grupo</button>
-                    <button type="button" class="btn btn-default fa fa-user-plus" data-toggle="modal" data-target="#ModalNovoUsuario"> Novo Usuário</button>
-                    <button type="button" class="btn btn-default fa fa-list-alt" data-toggle="modal" data-target="#ModalRegrasUsuario"> Regras Para Usuário</button>
-                    <button type="button" class="btn btn-default fa fa-list-alt" data-toggle="modal" data-target="#ModalRegrasGrupo"> Regras Para Grupo</button>
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#ModalRegrasGeral"> Regras Geral</button>
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#ModalListaRegras"> Lista Regra Geral</button>
+                    <button type="button" class="btn btn-default fa fa-file-text" data-toggle="modal" data-target="#ModalRegrasGeral"> Regras Geral</button>
+                    <button type="button" class="btn btn-default fa fa-list-alt" data-toggle="modal" data-target="#ModalListaRegras"> Lista Regra Geral</button>
                 </div>
             </div>
             <div class="panel-body">
@@ -69,8 +66,10 @@
                                         <button type="button" class="btn btn-default disabled fa fa-users" > <strong> {{$g->nome}} </strong></button>
                                     </a>
                                     <div class="pull-right">
-                                        <button type="button" class="btn btn-default fa fa-trash" onclick="removerGrupo( '{{$g->id_grupo}}', '{{$g->nome}}')" data-toggle="modal" data-target="#ModalRemoveGrupo"> Deletar</button>
-                                        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#ModalListaRegrasGrupo"> Listar Regras do grupo</button>
+                                        <button type="button" class="btn btn-default fa fa-user-plus" data-toggle="tooltip" title="Novo Usuario!" onclick="grupousuario( '{{$g->id_grupo}}', '{{$g->nome}}')" data-toggle="modal" data-target="#ModalNovoUsuario"> </button> <!-- Novo Usuario -->
+                                        <button type="button" class="btn btn-default fa fa-file-excel-o" data-toggle="modal" data-target="#ModalRegrasGrupo"> </button> <!-- Regras Para Grupo-->
+                                        <button type="button" class="btn btn-default fa fa-trash" onclick="removerGrupo( '{{$g->id_grupo}}', '{{$g->nome}}')" data-toggle="modal" data-target="#ModalRemoveGrupo"> </button>
+                                        <button type="button" class="btn btn-default fa fa-list-alt" data-toggle="modal" data-target="#ModalListaRegrasGrupo"> </button>
                                     </div>
                                 </h4>
                             </div>
@@ -79,24 +78,11 @@
                                 <div class="panel-body">
                                     @foreach( $Usuarios as $u )
                                         @if( $u->id_grupo == $g ->id_grupo and $u->status == 'A')
-                                            <button type="button" class="btn btn-primary fa fa-user"
-                                                    onclick="listaUsuario( '{{$u->id_usuario}}', '{{$u->nome}}', '{{$u->login}}', '{{$u->senha}}', '{{$u->id_grupo}}', '{{$u->status}}')"
-                                                    data-toggle="modal" data-target="#ModalUsuario"> {{ $u->nome }} </button>
+                                            <a class="btn btn-primary fa fa-user" href="{{ url('usuario',$u ->id_usuario) }}"> {{ $u->nome }}</a>
                                         @endif
                                         @if( $u->id_grupo == $g->id_grupo and $u->status == 'I')
-                                             <button type="button" class="btn btn-default fa fa-user"
-                                                     onclick="listaUsuario( '{{$u->id_usuario}}', '{{$u->nome}}', '{{$u->login}}', '{{$u->senha}}', '{{$u->id_grupo}}', '{{$u->status}}')"
-                                                     data-toggle="modal" data-target="#ModalUsuario"> {{ $u->nome }} </button>
+                                            <a class="btn btn-default fa fa-user" href="{{ url('usuario',$u ->id_usuario) }}"> {{ $u->nome }}</a>
                                         @endif
-
-                                            @foreach( $RegrasUG as $UG )
-                                                @if( $UG->id_usuario == $u->id_usuario )
-
-
-
-                                                @endif
-                                            @endforeach
-
                                     @endforeach
                                 </div>
                             </div>

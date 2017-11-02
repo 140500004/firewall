@@ -39,6 +39,7 @@ class UsuarioController extends Controller {
 	public function store(Request $request){
         $campos = $request->all();
 
+
         $this->validate($request,[
             'nome' => 'required',
             'login' => 'required|unique:usuarios',
@@ -82,8 +83,11 @@ class UsuarioController extends Controller {
 	 * @return Response
 	 */
 	public function show($id){
-        return "Show";
-		//
+        $Usuario = DB::select('select g.id_grupo, g.nome as grupo, u.id_usuario, u.nome, u.login, u.status from usuarios u, grupos g where g.id_grupo = u.id_grupo and u.id_usuario = ' .$id);
+        $Regras = DB::select('select r.id_regras, r.tipo, r.url, u.nome FROM regras r, usuarios u where r.id_usuario = u.id_usuario and u.id_usuario = ' .$id);
+        $Grupos = DB::select('select g.id_grupo, g.nome FROM grupos g');
+
+        return view('usuario', compact('Usuario','Regras', 'Grupos'));
 	}
 
 	/**
@@ -105,6 +109,7 @@ class UsuarioController extends Controller {
 	 */
 	public function update(Request $request){
         $campos = $request->all();
+
         $id = $campos['id_usuario'];
         $campos = $request->except('_token', '_method','senhac');
 

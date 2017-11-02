@@ -47,6 +47,11 @@ Route::group(['middleware' => 'auth'], function(){
     Route::resource('ip', 'IpController');
 
 
+    Route::get('/usuario', function(){
+        return View::make('usuario');
+    });
+
+
     Route::get('/logs', function(){
         return View::make('logs');
     });

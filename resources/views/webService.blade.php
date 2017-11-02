@@ -39,7 +39,7 @@ function comando($dados, $dir, $arq){
         $diretorio = " >> /etc/squid3/arquivos/";
         $arquivo = "liberados.txt";
 
-        $res = 3;//comando($linha, $diretorio, $arquivo);
+        $res = comando($linha, $diretorio, $arquivo);
 
         if( $res != 0 ){
             erro('Erro na aplicação entre em contato com o administrator #Error1001');

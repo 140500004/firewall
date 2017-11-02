@@ -48,7 +48,9 @@ class RegrasController extends Controller {
         }
 
         DB::insert('insert into regras (url, tipo, id_grupo, id_usuario) values (?,?,?,?)', array($url, $tipo, $id_grupo, $id_usuario));
-        return redirect('activedirectory');
+        //return redirect('activedirectory');
+        return back()->withInput()->with('success', 'Regra cadastrada com sucesso');
+        //return redirect()->route('ip.index')->with('success','Regras  atualizados com sucesso');
     }
 
 	/**
