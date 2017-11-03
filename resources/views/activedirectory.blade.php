@@ -7,7 +7,7 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <button type="button" class="btn btn-default disabled fa fa-sitemap"> <strong>  SERVER.COM </strong> </button>
+                <button type="button" class="btn btn-default disabled fa fa-sitemap"> <strong>  {{ shell_exec("domainname -a | grep . | cut -d ' ' -f2 | cut -c9- | tr [a-z] [A-Z]") }} </strong> </button>
                 <div class="pull-right">
                     <button type="button" class="btn btn-default fa fa-users" data-toggle="modal" data-target="#ModalNovoGrupo"> Novo Grupo</button>
                     <a class="btn btn-default btn btn-default fa fa-file-text" data-tt="tooltip" title="Regras do Grupo" href="{{ route('regras.index') }}"> Regras Geral</a>
