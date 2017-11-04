@@ -74,14 +74,25 @@
 
                             <div id="{{ $g->id_grupo }}" class="panel-collapse collapse">
                                 <div class="panel-body">
+
+                                    <?php $i = 0; ?>
+
                                     @foreach( $Usuarios as $u )
                                         @if( $u->id_grupo == $g ->id_grupo and $u->status == 'A')
                                             <a class="btn btn-primary fa fa-user" href="{{ url('usuario',$u ->id_usuario) }}"> {{ $u->nome }}</a>
+                                            <?php $i ++; ?>
                                         @endif
                                         @if( $u->id_grupo == $g->id_grupo and $u->status == 'I')
                                             <a class="btn btn-default fa fa-user" href="{{ url('usuario',$u ->id_usuario) }}"> {{ $u->nome }}</a>
+                                            <?php $i ++; ?>
                                         @endif
+
                                     @endforeach
+
+                                    @if( $i == 0 )
+                                        <div class="alert alert-danger"> Nenhum usuario no grupo. </div>
+                                    @endif
+
                                 </div>
                             </div>
                         </div>

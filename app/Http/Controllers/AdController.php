@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
+
 class AdController extends Controller {
 
 	/**
@@ -15,7 +16,6 @@ class AdController extends Controller {
 	 */
 
 	public function index(){
-
         $Grupos = DB::select('SELECT id_grupo, nome FROM grupos ORDER by nome');
         //$Usuarios = DB::select('select id_usuario, nome, id_grupo, status from usuarios');
         $Usuarios = DB::select('SELECT id_usuario, id_grupo, login, nome, senha, status FROM usuarios');

@@ -117,7 +117,12 @@
                 <strong id="grupo" class="fa fa-users"></strong>
                 {{ Form::open(['route' => ['grupo.destroy','id'], 'id' => 'modal_delete_grupo', 'method' => 'DELETE']) }}
             </div>
-            <small class="text-danger">  *Para excluir um grupo é necessário que ele esteja vazio.</small>
+
+            <h5><span class="label label-danger"> *Para excluir o grupo é necessário que ele esteja vazio.</span></h5>
+            </p>
+
+
+
              <div class="modal-footer">
                 {{ Form::submit('Sim', ['class' => 'btn btn-danger']) }}
                 {{ Form::button('Não', ['class' => 'btn btn-info', 'data-dismiss' => 'modal']) }}

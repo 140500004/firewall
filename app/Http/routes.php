@@ -51,6 +51,10 @@ Route::group(['middleware' => 'auth'], function(){
         return View::make('usuario');
     });
 
+    Route::get('/regrass', function(){
+        return View::make('regrasgrupos');
+    });
+
     Route::get('/geral', function(){
         return View::make('regrasgeral');
     });

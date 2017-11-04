@@ -1,12 +1,6 @@
 <?php
 
-$mysqli = new mysqli("localhost", "linux", "12345", "firewall");
-
-if ($mysqli->connect_errno) {
-    printf("Connect failed: %s\n", $mysqli->connect_error);
-    exit();
-}
-
+$mysqli = new mysqli("localhost", "linux", "12345", "squid3");
 
 function erro($msn){
     echo "
@@ -19,7 +13,7 @@ function erro($msn){
 
 function comando($dados, $dir, $arq){
     $saida = shell_exec("$dados $dir$arq; echo $?");
-    $saida = substr("$saida",-2); // Remover o ultimo vampos
+    $saida = substr("$saida",-2); // Remover o ultimo campo
     return $saida;
 }
 
@@ -46,6 +40,7 @@ function comando($dados, $dir, $arq){
             return ;
         }
     }
+
     //echo "Arquivo Liberado - " . $i++ . "</br>";
 
     # Arquivo Bloqueados
@@ -244,6 +239,9 @@ function comando($dados, $dir, $arq){
         }
     }
     //echo "Ips Bloqueados - " . $i++ . "</br>";
+
+    // Fecha o acesso ao banco
+    mysqli_close($mysqli);
 
     ## Fim do Arquivo
     //echo "</br>Carregando Squid. ...";

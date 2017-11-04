@@ -37,7 +37,7 @@
                 {{ Form::label('', '', array('class' => 'input-group-btn')) }}
 
                 {{ Form::hidden('id_usuario', '0') }}
-                {{ Form::hidden('id_grupo', $Regras[0]->id_regras) }}
+                {{ Form::hidden('id_grupo', '0') }}
 
                 {{ Form::submit('Salvar', ['class' => 'btn btn-success form-control']) }}
                 {{ Form::close() }}
@@ -48,6 +48,7 @@
             @if(empty($Regras))
                 <div class="alert alert-danger"> Nenhuma regra cadastrada, faça primeiro o cadastro da regra. </div>
             @else
+
                 {{ Form::label('http', 'http.', array('class' => 'col-xs-2')) }}
                 {{ Form::label('Domínio', 'Domínio', array('class' => 'col-xs-4')) }}
                 {{ Form::label('Tipo', 'Tipo', array('class' => 'col-xs-3')) }}

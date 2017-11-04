@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\regras;
 use Illuminate\Support\Facades\DB;
 
+
+
 class RegrasController extends Controller {
 
 	/**
@@ -37,11 +39,17 @@ class RegrasController extends Controller {
 	 * @return Response
 	 */
     public function store(Request $request){
+
         $all = $request->all();
         $url = $all['url'];
         $tipo = $all['tipo'];
         $id_grupo = $all['id_grupo'];
         $id_usuario = $all['id_usuario'];
+
+        $this->validate($request,[
+            'url' => 'required|unique:regras|filled',
+            'tipo' => 'required',
+        ]);
 
         if($id_grupo == 0 ){
             $id_grupo = NULL;
@@ -51,9 +59,11 @@ class RegrasController extends Controller {
         }
 
         DB::insert('insert into regras (url, tipo, id_grupo, id_usuario) values (?,?,?,?)', array($url, $tipo, $id_grupo, $id_usuario));
-        //return redirect('activedirectory');
-        return back()->withInput()->with('success', 'Regra cadastrada com sucesso');
-        //return redirect()->route('ip.index')->with('success','Regras  atualizados com sucesso');
+
+        $RegrasG = DB::select('select g.id_grupo, g.nome as grupo, r.id_regras, r.tipo, r.url FROM regras r, grupos g where r.id_grupo = g.id_grupo and r.id_grupo = ' .$id_grupo);
+
+        $request->session()->flash('success', 'Regra cadastrada com sucesso');
+        return view('regrasgrupos', compact('RegrasG'));
     }
 
 	/**
@@ -63,10 +73,17 @@ class RegrasController extends Controller {
 	 * @return Response
 	 */
 	public function show($id){
-        $RegrasG = DB::select('select g.nome as grupo, r.id_regras, r.tipo, r.url FROM regras r, grupos g where r.id_grupo = g.id_grupo and r.id_grupo = ' .$id);
 
+        $RegrasG = DB::select('select g.id_grupo, g.nome as grupo, r.id_regras, r.tipo, r.url FROM regras r, grupos g where r.id_grupo = g.id_grupo and r.id_grupo = ' .$id);
+
+        if(empty($RegrasG) ){
+            $RegrasG = DB::select('select id_grupo, nome as grupo from grupos where id_grupo = '. $id);
+            return view('regrasgrupos', compact('RegrasG'));
+        }
+
+        //return back()->withInput()->with('success', 'Regra cadastrada com sucesso');
         return view('regrasgrupos', compact('RegrasG'));
-
+        //return redirect()->back()->with(compact('RegrasG'));
 	}
 
 	/**
@@ -91,7 +108,7 @@ class RegrasController extends Controller {
         $campos = $request->except('_token', '_method');
 
         Regras::where('id_regras', $id)->update($campos);
-        return redirect('activedirectory');
+        return back()->with('success','Regra atualizado com sucesso');
 	}
 
 	/**
@@ -101,9 +118,8 @@ class RegrasController extends Controller {
 	 * @return Response
 	 */
 	public function destroy($id){
-        return "destroy $id";
         Regras::where('id_regras', '=', $id)->delete();
-        return redirect('activedirectory');
+        return back()->with('success','Regra removida com sucesso');
 	}
 
 }

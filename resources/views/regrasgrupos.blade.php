@@ -1,7 +1,6 @@
 @extends('layouts.dashboard')
-@section('page_heading','Regras do Grupo: '.$RegrasG[0]->grupo )
+@section('page_heading','Regras do Grupo: '. $RegrasG[0]->grupo )
 @section('section')
-
 
 
     @if ($message = Session::get('success'))
@@ -15,6 +14,15 @@
         <div class="alert alert-danger alert-block">
             <button type="button" class="close" data-dismiss="alert">×</button>
             <strong>{{ $message }}</strong>
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @foreach($errors->all() as $r)
+                <strong>{{ $r ."</br>"}}</strong>
+            @endforeach
         </div>
     @endif
 
@@ -38,7 +46,7 @@
                 {{ Form::label('', '', array('class' => 'input-group-btn')) }}
 
                 {{ Form::hidden('id_usuario', '0') }}
-                {{ Form::hidden('id_grupo', $RegrasG[0]->id_regras) }}
+                {{ Form::hidden('id_grupo', $RegrasG[0]->id_grupo) }}
 
                 {{ Form::submit('Salvar', ['class' => 'btn btn-success form-control']) }}
                 {{ Form::close() }}
@@ -46,7 +54,7 @@
 
             <hr>
 
-            @if(empty($RegrasG))
+            @if(empty($RegrasG[0]->url))
                 <div class="alert alert-danger"> Nenhuma regra cadastrada, faça primeiro o cadastro da regra. </div>
             @else
                 {{ Form::label('http', 'http.', array('class' => 'col-xs-2')) }}
@@ -64,13 +72,17 @@
                         {{ Form::select('tipo', array('B' => 'Bloqueado', 'L' => 'Liberado'),  $rg->tipo, array('class' => 'form-control')) }}
                         {{ Form::label('', '', array('class' => 'input-group-btn')) }}
 
-                        <a class="input-group" href="{{ route('regras.destroy', $rg->id_regras) }}">
-                            {{ Form::label('Deletar', 'Deletar', array('class' => 'form-control btn-warning')) }}
-                        </a>
                         {{ Form::label(' ', ' ', array('class' => 'input-group-btn')) }}
                         {{ Form::submit('Atualizar', ['class' => 'form-control btn-success']) }}
                         {{ Form::close() }}
+
+                        {{ Form::label('', '', array('class' => 'input-group-btn')) }}
+
+                        {{ Form::open(['method' => 'DELETE','route' => ['regras.destroy', $rg->id_regras],'style'=>'display:inline', 'id' => 'myForm']) }}
+                        {{ Form::submit('Deletar', ['class' => 'form-control btn-danger']) }}
+                        {{ Form::close() }}
                     </div>
+                    </p>
                 @endforeach
             @endif
         </div>
