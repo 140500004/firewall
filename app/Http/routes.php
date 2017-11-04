@@ -12,9 +12,9 @@
 */
 
 
-Route::get('/auth/register', function()
-{
+Route::get('/auth/register', function(){
     return View::make('errors.404');
+    return View::make('errors.503');
 });
 
 Route::controllers([
@@ -22,17 +22,12 @@ Route::controllers([
     'password' => 'Auth\PasswordController',
 ]);
 
-
 Route::group(['middleware' => 'auth'], function(){
-    Route::get('/', function()
-    {
+    Route::get('/', function(){
         return View::make('home');
-        //return View::make('login');
     });
 
-    Route::get('/home', function()
-    {
-        //return View::make('login');
+    Route::get('/home', function(){
         return View::make('home');
     });
 
@@ -46,13 +41,15 @@ Route::group(['middleware' => 'auth'], function(){
 
     Route::resource('ip', 'IpController');
 
+    Route::resource('ta', 'AuthController');
+
 
     Route::get('/usuario', function(){
         return View::make('usuario');
     });
 
-    Route::get('/regrass', function(){
-        return View::make('regrasgrupos');
+    Route::get('/perfil', function(){
+        return View::make('perfil');
     });
 
     Route::get('/geral', function(){
@@ -76,57 +73,3 @@ Route::group(['middleware' => 'auth'], function(){
     });
 
 });
-
-
-
-/*
-Route::get('/charts', function()
-{
-	return View::make('mcharts');
-});
-
-Route::get('/tables', function()
-{
-	return View::make('table');
-});
-
-Route::get('/forms', function()
-{
-	return View::make('form');
-});
-
-Route::get('/grid', function()
-{
-	return View::make('grid');
-});
-
-Route::get('/buttons', function()
-{
-	return View::make('buttons');
-});
-
-Route::get('/icons', function()
-{
-	return View::make('icons');
-});
-
-Route::get('/panels', function()
-{
-	return View::make('panel');
-});
-
-Route::get('/typography', function()
-{
-	return View::make('typography');
-});
-
-Route::get('/notifications', function()
-{
-	return View::make('notifications');
-});
-
-Route::get('/blank', function()
-{
-	return View::make('blank');
-});
-*/

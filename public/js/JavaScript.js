@@ -18,3 +18,9 @@ function removerUsuario(){
 $(document).ready(function(){
      $("[data-tt=tooltip]").tooltip();
 });
+
+
+
+$(document).ready(function(){
+    $("#myModal").modal();
+});

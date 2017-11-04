@@ -16,7 +16,7 @@
     <a class="btn btn-success" href="{{ route('ip.create') }}"> Novo IP</a>
     <br><br>
 
-    @if(empty($ips))
+    @if(empty($ips[0]->ip))
         <div class="alert alert-danger"> Você não tem nenhum IP cadastrado. </div>
     @else
 

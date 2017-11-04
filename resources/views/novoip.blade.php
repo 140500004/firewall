@@ -11,7 +11,6 @@
         </div>
     @endif
 
-
     {{ Form::open(array('url' => 'ip')) }}
 
         <div class="form-horizontal col-md-4 control-label col-md-offset-4">

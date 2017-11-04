@@ -5,6 +5,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use App\User;
+use Auth;
 
 
 class AdController extends Controller {
@@ -72,9 +75,35 @@ class AdController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
-		//
+    public function update(Request $request){
+        $campos = $request->all();
+
+        $this->validate($request,[
+            'nome' => 'required',
+            'email' => 'required|filled:email',
+            'senhaa' => 'required|min:6',
+            'senha' => 'required|min:6',
+            'senhac' => 'required|same:senha',
+        ],[
+            'senhac.same' => 'Senha não consiste',
+            'senhaa.required' => 'O campo senha atual é obrigatório.',
+            'senhac.required' => 'Confirme a senha.',
+        ]);
+
+        if ( Hash::check($campos['senha'], Auth::user()->password) ) {
+            return back()->with('error',' Não é permitido o usar a mesma senha');
+        }
+
+        if (!Hash::check($campos['senhaa'], Auth::user()->password)) {
+            return back()->with('error',' A senha atual não corresponde');
+        }
+
+        $campos['senha'] = bcrypt($campos['senha']);
+
+        User::where('id',Auth::user()->id)->update(['name'=>$campos['nome'], 'email'=>$campos['email'], 'password'=>$campos['senha']]);
+
+        return back()->with('success',' Perfil modificado com sucesso');
+
 	}
 
 	/**

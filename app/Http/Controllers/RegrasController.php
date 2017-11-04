@@ -18,7 +18,6 @@ class RegrasController extends Controller {
 
     public function index(Regras $regras){
         //$Regras = DB::select('select id_regras, tipo, url, descricao from regras WHERE id_grupo is null and id_usuario is null');
-
         $Regras = Regras::select('id_regras', 'tipo', 'url', 'descricao')->where(['id_grupo' => null, 'id_usuario' => null])->paginate(5);
 
         return view('regrasgeral', compact('Regras'));
@@ -60,10 +59,21 @@ class RegrasController extends Controller {
 
         DB::insert('insert into regras (url, tipo, id_grupo, id_usuario) values (?,?,?,?)', array($url, $tipo, $id_grupo, $id_usuario));
 
-        $RegrasG = DB::select('select g.id_grupo, g.nome as grupo, r.id_regras, r.tipo, r.url FROM regras r, grupos g where r.id_grupo = g.id_grupo and r.id_grupo = ' .$id_grupo);
+        # Regras Grupo
+        if( $id_grupo != NULL && $id_grupo != 0 ){
+            $RegrasG = DB::select('select g.id_grupo, g.nome as grupo, r.id_regras, r.tipo, r.url FROM regras r, grupos g where r.id_grupo = g.id_grupo and r.id_grupo = ' .$id_grupo);
+            $request->session()->flash('success', 'Regra cadastrada com sucesso');
+            return view('regrasgrupos', compact('RegrasG'));
+        }
 
+        if( $id_usuario != NULL && $id_usuario != 0 ){
+            return "REGRAS USUARIO";
+        }
+
+        # Regras GERAL
+        $Regras = Regras::select('id_regras', 'tipo', 'url', 'descricao')->where(['id_grupo' => null, 'id_usuario' => null])->paginate(5);
         $request->session()->flash('success', 'Regra cadastrada com sucesso');
-        return view('regrasgrupos', compact('RegrasG'));
+        return view('regrasgeral', compact('Regras'));
     }
 
 	/**

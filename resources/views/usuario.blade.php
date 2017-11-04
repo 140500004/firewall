@@ -1,5 +1,5 @@
 @extends('layouts.dashboard')
-@section('page_heading','Usuario: '.$Usuario[0]->nome )
+@section('page_heading','Grupo: '. $Grupos[0]->nome .' > Usuario: '.$Usuario[0]->nome )
 @section('section')
 
 @include('modal')
@@ -18,6 +18,14 @@
     </div>
 @endif
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        @foreach($errors->all() as $r)
+            <strong>{{ $r ."</br>"}}</strong>
+        @endforeach
+    </div>
+@endif
 
     <nav class="navbar navbar">
         <ul class="nav nav-tabs">
@@ -25,7 +33,6 @@
             <li><a class="fa fa-file-text" data-toggle="tab" href="#listaRegras"> Regras</a></li>
         </ul>
     </nav>
-
 
     <div class="form-horizontal col-md-7 control-label col-md-offset-3 tab-content">
 
@@ -46,12 +53,12 @@
 
                 <div class="form-group">
                     {{ Form::label('nova senha') }}
-                    {{ Form::password('senha', ['class' => 'form-control', 'placeholder' => 'Nova Senha', 'required' => 'required']) }}
+                    {{ Form::password('senha', ['class' => 'form-control', 'placeholder' => 'Nova Senha']) }}
                 </div>
 
                  <div class="form-group">
                     {{ Form::label('Confirme a Senha') }}
-                     {{ Form::password('senhac', ['class' => 'form-control', 'placeholder' => 'Nova Senha', 'required' => 'required']) }}
+                     {{ Form::password('senhac', ['class' => 'form-control', 'placeholder' => 'Nova Senha']) }}
                  </div>
 
                 <div class="form-group">
@@ -72,7 +79,6 @@
                         <input name="status" type="checkbox" value="I">
                     @else
                         <input name="status" type="checkbox" checked value="I">
-
                     @endif
                 </div>
 

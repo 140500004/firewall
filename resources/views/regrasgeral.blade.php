@@ -17,6 +17,15 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @foreach($errors->all() as $r)
+                <strong>{{ $r ."</br>"}}</strong>
+            @endforeach
+        </div>
+    @endif
+
     <nav class="navbar navbar">
         <ul class="nav nav-tabs">
             <li class="active"><a class="fa fa-file-text" data-toggle="tab" href="#listaRegras"> Regras</a></li>
@@ -45,10 +54,9 @@
 
             <hr>
 
-            @if(empty($Regras))
+            @if(empty($Regras[0]->url))
                 <div class="alert alert-danger"> Nenhuma regra cadastrada, faça primeiro o cadastro da regra. </div>
             @else
-
                 {{ Form::label('http', 'http.', array('class' => 'col-xs-2')) }}
                 {{ Form::label('Domínio', 'Domínio', array('class' => 'col-xs-4')) }}
                 {{ Form::label('Tipo', 'Tipo', array('class' => 'col-xs-3')) }}
@@ -64,19 +72,24 @@
                         {{ Form::select('tipo', array('B' => 'Bloqueado', 'L' => 'Liberado'),  $r->tipo, array('class' => 'form-control')) }}
                         {{ Form::label('', '', array('class' => 'input-group-btn')) }}
 
-                        <a class="input-group" href="{{ route('regras.destroy', $r->id_regras) }}">
-                            {{ Form::label('Deletar', 'Deletar', array('class' => 'form-control btn-warning')) }}
-                        </a>
                         {{ Form::label(' ', ' ', array('class' => 'input-group-btn')) }}
                         {{ Form::submit('Atualizar', ['class' => 'form-control btn-success']) }}
                         {{ Form::close() }}
+
+                        {{ Form::label('', '', array('class' => 'input-group-btn')) }}
+
+                        {{ Form::open(['method' => 'DELETE','route' => ['regras.destroy', $r->id_regras],'style'=>'display:inline']) }}
+                        {{ Form::submit('Deletar', ['class' => 'form-control btn-danger']) }}
+                        {{ Form::close() }}
                     </div>
+                    </p>
                 @endforeach
             @endif
 
             <div class="col-md-offset-5">
                 {{ $Regras->render() }}
             </div>
+
         </div>
     </div>
 

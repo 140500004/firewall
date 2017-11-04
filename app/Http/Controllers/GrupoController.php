@@ -24,7 +24,8 @@ class GrupoController extends Controller {
     public function index(Grupo $grupo){
 	    //$grupos = $grupo->all();
         //return view('activedirectory', compact('grupos'));
-        return redirect('activedirectory');
+        //return redirect('activedirectory');
+        return "Testede aqui";
 
 	}
 
