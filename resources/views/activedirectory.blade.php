@@ -83,7 +83,7 @@
                                             <?php $i ++; ?>
                                         @endif
                                         @if( $u->id_grupo == $g->id_grupo and $u->status == 'I')
-                                            <a class="btn btn-default fa fa-user" href="{{ url('usuario',$u ->id_usuario) }}"> {{ $u->nome }}</a>
+                                            <a class="btn btn-default fa fa-user" data-tt="tooltip" title="Desabilitado" href="{{ url('usuario',$u ->id_usuario) }}"> {{ $u->nome }}</a>
                                             <?php $i ++; ?>
                                         @endif
 

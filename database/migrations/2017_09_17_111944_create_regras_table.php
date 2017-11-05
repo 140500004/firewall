@@ -20,10 +20,10 @@ class CreateRegrasTable extends Migration {
             $table->enum('tipo', ['L', 'B'])->default('B');
             $table->string('url', 50);
             $table->string('descricao', 50)->nullable();
-            $table->unique(['id_grupo','url']);
-            $table->unique(['id_usuario','url']);
-            $table->unique(['tipo','url']);
-            $table->unique(['id_grupo', 'id_usuario','url']);
+            $table->unique(['id_grupo','url','tipo']);
+            $table->unique(['id_usuario','url','tipo']);
+            //$table->unique(['tipo','url','tipo']);
+            $table->unique(['id_grupo', 'id_usuario','url','tipo']);
 
             $table->foreign('id_grupo')->references('id_grupo')->on('grupos');
             $table->foreign('id_usuario')->references('id_usuario')->on('usuarios');

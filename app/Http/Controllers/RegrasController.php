@@ -46,7 +46,7 @@ class RegrasController extends Controller {
         $id_usuario = $all['id_usuario'];
 
         $this->validate($request,[
-            'url' => 'required|unique:regras|filled',
+            'url' => 'required|filled',
             'tipo' => 'required',
         ]);
 
@@ -66,8 +66,11 @@ class RegrasController extends Controller {
             return view('regrasgrupos', compact('RegrasG'));
         }
 
+        # Regras Usuario
         if( $id_usuario != NULL && $id_usuario != 0 ){
-            return "REGRAS USUARIO";
+            $Regras = DB::select('select r.id_regras, r.tipo, r.url, u.nome FROM regras r, usuarios u where r.id_usuario = u.id_usuario and u.id_usuario = ' .$id_usuario);
+            $request->session()->flash('success', 'Regra cadastrada com sucesso');
+            return back()->with(compact($Regras));
         }
 
         # Regras GERAL

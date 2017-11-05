@@ -1,5 +1,5 @@
 @extends('layouts.dashboard')
-@section('page_heading','Grupo: '. $Grupos[0]->nome .' > Usuario: '.$Usuario[0]->nome )
+@section('page_heading','Usuario: '.$Usuario[0]->nome )
 @section('section')
 
 @include('modal')
@@ -129,13 +129,17 @@
                                 {{ Form::select('tipo', array('B' => 'Bloqueado', 'L' => 'Liberado'),  $r->tipo, array('class' => 'form-control')) }}
                                 {{ Form::label('', '', array('class' => 'input-group-btn')) }}
 
-                                <a class="input-group" href="{{ route('regras.destroy', $r->id_regras) }}">
-                                    {{ Form::label('Deletar', 'Deletar', array('class' => 'form-control btn-warning')) }}
-                                </a>
                                 {{ Form::label(' ', ' ', array('class' => 'input-group-btn')) }}
                                 {{ Form::submit('Atualizar', ['class' => 'form-control btn-success']) }}
                                 {{ Form::close() }}
+
+                                {{ Form::label('', '', array('class' => 'input-group-btn')) }}
+
+                                {{ Form::open(['method' => 'DELETE','route' => ['regras.destroy', $r->id_regras],'style'=>'display:inline']) }}
+                                {{ Form::submit('Deletar', ['class' => 'form-control btn-danger']) }}
+                                {{ Form::close() }}
                             </div>
+                            <p>
                         @endforeach
             @endif
         </div>

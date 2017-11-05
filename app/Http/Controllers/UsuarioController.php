@@ -160,7 +160,7 @@ class UsuarioController extends Controller {
         if( empty($campos['status'])){
             $saida3 = shell_exec("/usr/local/samba/bin/samba-tool user enable ".$campos['login']."; echo $?");
             $saida3 = substr("$saida3",-2);
-            $campos['status'] = 'A';
+            $campos['status'] = "A";
             mensagem($saida3,'habilitar o usuario '. $campos['nome']);
         }
 
@@ -207,7 +207,9 @@ class UsuarioController extends Controller {
             return back()->with('error','Alguma coisa deu errado no samba ao remover o usuario \'' . $nomeUsuario . '\' entre em contato com o administrador');
         }
 
+        DB::delete('DELETE FROM regras WHERE id_usuario = ' .$id);
         Usuario::where('id_usuario', '=', $id)->delete();
-        return back()->with('success',' Usuario \'' . $nomeUsuario .'\' removido com sucesso');
+        //return back()->with('success',' Usuario \'' . $nomeUsuario .'\' removido com sucesso');
+        return redirect('activedirectory');
 	}
 }

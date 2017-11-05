@@ -24,8 +24,8 @@ class GrupoController extends Controller {
     public function index(Grupo $grupo){
 	    //$grupos = $grupo->all();
         //return view('activedirectory', compact('grupos'));
-        //return redirect('activedirectory');
-        return "Testede aqui";
+        return redirect('activedirectory');
+        //return "Testede aqui";
 
 	}
 
@@ -117,7 +117,7 @@ class GrupoController extends Controller {
         if( $saida != 0 ){
             return back()->with('error','Alguma coisa deu errado no samba ao remover o grupo \'' . $nomeGrupo . '\' entre em contato com o administrador');
         }
-
+        DB::delete('DELETE FROM regras WHERE id_usuario = ' .$id);
         Grupo::where('id_grupo', '=', $id)->delete();
         return back()->with('success',' Grupo \'' . $nomeGrupo .'\' removido com sucesso');
     }
