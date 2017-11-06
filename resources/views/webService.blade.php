@@ -19,12 +19,18 @@ function comando($dados, $dir, $arq){
 
     $i = 1;
 
+    //shell_exec("tar -cvf /home/linux/BackupSquid/Backup-`date +%Y-%d-%m-%H:%M:%S`.tar.gz /etc/squid3/"); #Backup da Pasta do Squid
+
     # Limpar arquivo
     shell_exec("echo -n > /etc/squid3/arquivos/liberados.txt"); #Arquivo Liberado
     shell_exec("echo -n > /etc/squid3/arquivos/bloqueados.txt"); #Arquivo bloqueado
     shell_exec("echo -n > /etc/squid3/arquivos/ip/IpBloqueados.txt"); #Arquivo IP Bloqueados
     shell_exec("echo -n > /etc/squid3/arquivos/ip/IpLiberados.txt"); #Arquivo Ip Liberados
     shell_exec("echo -n > /etc/squid3/body3.conf"); #Arquivo body do squid
+
+    shell_exec("rm -rf /etc/squid3/arquivos/grupos/*"); #Limpar pasta do grupo
+    shell_exec("rm -rf /etc/squid3/arquivos/url/*"); #Limpar pasta do url
+    shell_exec("rm -rf /etc/squid3/arquivos/users/*"); #Limpar pasta do users
 
     # Arquivo Liberado
     $result = $mysqli->query("select url as regras from regras WHERE tipo = 'L' and id_grupo is null and id_usuario is null");
@@ -40,7 +46,6 @@ function comando($dados, $dir, $arq){
             return ;
         }
     }
-
     //echo "Arquivo Liberado - " . $i++ . "</br>";
 
     # Arquivo Bloqueados
@@ -240,6 +245,23 @@ function comando($dados, $dir, $arq){
     }
     //echo "Ips Bloqueados - " . $i++ . "</br>";
 
+
+    ### Arquivo com as configurações final ###
+    $result = $mysqli->query("select tipo from conf;");
+    while ($dados = $result->fetch_assoc()) {
+        $linha = "echo \"http_access ". $dados['tipo'] . " all\"";
+        $diretorio = " > /etc/squid3/";
+        $arquivo = "footer.conf";
+
+        $res = comando($linha, $diretorio, $arquivo);
+
+        if( $res != 0 ){
+            erro('Erro na aplicação entre em contato com o administrator #Error1014');
+            return;
+        }
+    }
+    //echo "Arquivo fim - " . $i++ . "</br>";
+
     // Fecha o acesso ao banco
     mysqli_close($mysqli);
 
@@ -248,7 +270,7 @@ function comando($dados, $dir, $arq){
     $saida = shell_exec("squid3 -k reconfigure; echo $?");
     $saida = substr("$saida",-2);
     if( $saida != 0 ){
-        erro('Erro na aplicação entre em contato com o administrator #Error1014');
+        erro('Erro na aplicação entre em contato com o administrator #Error1015');
         return;
     }
     //echo "</br>Squid OK ....";
