@@ -42,9 +42,15 @@ class AdController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function store()
-	{
-		//
+	public function store(Request $request)	{
+
+        $tipo = $request->input('tipo');
+        DB::table('conf')->where('id', 1)->update(['tipo' => $tipo]);
+
+        if( $tipo == "deny"){
+            return back()->with('success',' Regra modificada para <em> bloqueado </em> realizada com sucesso');
+        }
+        return back()->with('success',' Regra modificada para <em> liberada </em> realizada com sucesso');
 	}
 
 	/**
@@ -64,9 +70,8 @@ class AdController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function edit($id)
-	{
-		//
+	public function edit($id){
+
 	}
 
 	/**
@@ -112,9 +117,7 @@ class AdController extends Controller {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
-	{
+	public function destroy($id){
 		//
 	}
-
 }
