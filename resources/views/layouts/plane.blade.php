@@ -19,6 +19,10 @@
 	<script src="{{ asset("assets/scripts/frontend.js") }}" type="text/javascript"></script>
 	<script src="{{ asset("js/JavaScript.js") }}" type="text/javascript"></script>
 
+
+	<script src="{{ asset("sweetalert/sweetalert.min.js") }}" type="text/javascript"></script>
+	<link rel="stylesheet" href="{{ asset("sweetalert/sweetalert.css") }}" />
+
 	<!-- <footer class="page-footer">
 		<label>© Copyright  - Marlon Santos - {{ date("Y") }}. Todos os direitos reservados.</label>
 	</footer> -->

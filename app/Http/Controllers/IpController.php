@@ -93,8 +93,9 @@ class IpController extends Controller {
 	 * @return Response
 	 */
 	public function destroy($id){
+        $ip = Ip::select('ip')->where('id_ip', $id)->get('id_ip');
         Ip::where('id_ip',$id)->delete();
-        return redirect()->route('ip.index')->with('success','Removido com sucesso '. $id);
+        return redirect()->route('ip.index')->with('success','Removido com sucesso o IP: '. $ip[0]->ip);
 	}
 
 }

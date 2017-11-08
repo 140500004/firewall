@@ -38,7 +38,7 @@
                             <td>{{ $ip->descricao }}</td>
                             <td>
                                 <a class="btn btn-primary" href="{{ route('ip.edit',$ip->id_ip) }}">Editar</a>
-                                {{ Form::open(['method' => 'DELETE','route' => ['ip.destroy', $ip->id_ip],'style'=>'display:inline', 'id' => 'myForm']) }}
+                                {{ Form::open(['method' => 'DELETE','route' => ['ip.destroy', $ip->id_ip],'style'=>'display:inline', 'id' => 'conf-drop']) }}
                                 {{ Form::submit('Deletar', ['class' => 'btn btn-danger']) }}
                                 {{ Form::close() }}
                             </td>

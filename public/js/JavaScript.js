@@ -19,8 +19,52 @@ $(document).ready(function(){
      $("[data-tt=tooltip]").tooltip();
 });
 
-
-
 $(document).ready(function(){
     $("#myModal").modal();
+});
+
+
+$("#conf-update").submit(function(e){
+    e.preventDefault();
+        swal({
+            title: 'Atenção!',
+            text: "Apos atualiza você não poderá reverter isso!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, Atualiza',
+            cancelButtonText: 'Não Cancelar',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false
+
+        },function(isConfirm){
+            if (isConfirm) {
+                $('#conf-update').unbind('submit').submit();
+            }
+        });
+});
+
+
+$("#conf-drop").submit(function(e){
+    e.preventDefault();
+    swal({
+        title: 'Atenção!',
+        text: "Apos excluir não poderá reverter isso!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, Excluir',
+        cancelButtonText: 'Não Cancelar',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false
+
+    },function(isConfirm){
+        if (isConfirm) {
+            $('#conf-drop').unbind('submit').submit();
+        }
+    });
 });

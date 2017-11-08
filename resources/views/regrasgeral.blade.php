@@ -63,7 +63,7 @@
                 {{ Form::label('Ação', 'Ação', array('class' => 'col-xs-3')) }}
 
                 @foreach($Regras as $r)
-                    {{ Form::model('regras', ['method' => 'PUT','route' => ['regras.update', $r->id_regras]])}}
+                    {{ Form::model('regras', ['method' => 'PUT','route' => ['regras.update', $r->id_regras], 'id' => 'conf-update'])}}
                     <div class="input-group">
                         {{ Form::label('www', 'www.', array('class' => 'input-group-addon')) }}
                         {{ Form::text( 'url', $r->url, ['class' => 'form-control', 'placeholder' => 'url']) }}
