@@ -7,7 +7,8 @@ function mensagem($msn){
                 <strong>$msn</strong>
             </div>
     ";
-    exit();
+    return;
+    exit;
 }
 
 function restore(){
@@ -161,6 +162,7 @@ function limparArquivos(){
         squid($linha, 'Erro na aplicação na busca dos url_regex do usuario entre em contato com o administrator #Error1012');
     }
 
+
     ## url_regex usuario bloqueados
     $sql = DB::select("select login as usuario from usuarios");
     foreach ( $sql as $s ) {
@@ -191,66 +193,50 @@ function limparArquivos(){
     }
 
 
-/*
-    # http_access Usuario
-    $result = $mysqli->query("SELECT login FROM usuarios");
-    while ($dados = $result->fetch_assoc()) {
-        $linha =  "echo \"http_access allow u_" . $dados['login'] . " ru_" . $dados['login']. "\"";
-        $diretorio = " >> /etc/squid3/";
-        $arquivo = "body3.conf";
-
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1007');
-            return;
-        }
+    ## http_access para o usuario liberados
+    $sql = DB::select("SELECT login FROM usuarios");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"http_access allow u_" . $s->login . " rul_" . $s->login. "\" ";
+        squid($linha, 'Erro na aplicação na busca das http_access para os usuario entre em contato com o administrator #Error1016');
     }
-    //echo "http_access Usuario - " . $i++ . "</br>";
 
-    # http_access Grupo
-    $result = $mysqli->query("select nome from grupos");
-    while ($dados = $result->fetch_assoc()) {
-        $linha =  "echo \"http_access allow g_" . $dados['nome'] . " rg_" . $dados['nome']. "\"";
-        $diretorio = " >> /etc/squid3/";
-        $arquivo = "body3.conf";
 
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1008');
-            return;
-        }
+    ## http_access para o usuario bloqueados
+    $sql = DB::select("SELECT login FROM usuarios");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"http_access deny u_" . $s->login . " rub_" . $s->login. "\" ";
+        squid($linha, 'Erro na aplicação na busca das http_access para os usuario entre em contato com o administrator #Error1017');
     }
-    //echo "http_access Grupo - " . $i++ . "</br>";
+
+    ## http_access para o grupos liberados
+    $sql = DB::select("select nome from grupos");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"http_access allow g_" . $s->nome . " rgl_" . $s->nome. "\" ";
+        squid($linha, 'Erro na aplicação na busca das http_access para os grupos entre em contato com o administrator #Error1018');
+    }
 
 
+    ## http_access para o grupos bloqueados
+    $sql = DB::select("select nome from grupos");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"http_access deny g_" . $s->nome . " rgb_" . $s->nome. "\" ";
+        squid($linha, 'Erro na aplicação na busca das http_access para os grupos entre em contato com o administrator #Error1019');
+    }
 
-    ### Arquivo com as configurações final ###
-    $result = $mysqli->query("select tipo from conf;");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"http_access ". $dados['tipo'] . " all\"";
+
+    ## Arquivo com as configurações final
+    $sql = DB::select("select tipo from conf");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"http_access ". $s->tipo . " all\"";
         $diretorio = " > /etc/squid3/";
         $arquivo = "footer.conf";
-
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1014');
-            return;
-        }
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca das regras para os grupos entre em contato com o administrator #Error1020');
     }
-    //echo "Arquivo fim - " . $i++ . "</br>";
 
-    // Fecha o acesso ao banco
-    mysqli_close($mysqli);
+    ## Restart squid
+    $linha = "/etc/init.d/squid3 force-reload";
+    $texto = "Erro na aplicação ao restart o squid entre em contato com o administrator #Error1021";
+    shell($linha, $texto);
 
-    ## Fim do Arquivo
-    //echo "</br>Carregando Squid. ...";
-    $saida = shell_exec("squid3 -k reconfigure; echo $?");
-    $saida = substr("$saida",-2);
-    if( $saida != 0 ){
-        erro('Erro na aplicação entre em contato com o administrator #Error1015');
-        return;
-    }
-    //echo "</br>Squid OK ....";
+    ## FIM

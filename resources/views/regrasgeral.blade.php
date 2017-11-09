@@ -78,11 +78,11 @@
 
                         {{ Form::label('', '', array('class' => 'input-group-btn')) }}
 
-                        {{ Form::open(['method' => 'DELETE','route' => ['regras.destroy', $r->id_regras],'style'=>'display:inline','class' => 'conf-drop'])}}
+                        {{ Form::open(['method' => 'DELETE','route' => ['regras.destroy', $r->id_regras], 'class' => 'conf-drop'])}}
                         {{ Form::submit('Deletar', ['class' => 'form-control btn-danger']) }}
                         {{ Form::close() }}
                     </div>
-                    </p>
+                    <p></p>
                 @endforeach
             @endif
 

@@ -85,7 +85,7 @@
 
         <div id="page-wrapper">
 			 <div class="row">
-                 <!-- include('webService') -->
+                 @include('webService')
                 <div class="col-lg-12">
                     <h1 class="page-header">@yield('page_heading')</h1>
                 </div>
