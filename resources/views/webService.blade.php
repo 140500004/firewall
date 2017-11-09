@@ -1,136 +1,197 @@
 <?php
 
-$mysqli = new mysqli("localhost", "linux", "12345", "squid3");
-
-function erro($msn){
+function mensagem($msn){
     echo "
            <div class='alert alert-danger alert-block'>
                 <button type='button' class='close' data-dismiss='alert'>×</button>
                 <strong>$msn</strong>
             </div>
     ";
+    exit();
 }
 
-function comando($dados, $dir, $arq){
-    $saida = shell_exec("$dados $dir$arq; echo $?");
-    $saida = substr("$saida",-2); // Remover o ultimo campo
-    return $saida;
+function restore(){
 }
 
-    $i = 1;
+function squid($linha, $texto){
+    $all = $linha . " >> /etc/squid3/body.conf";
+    shell($all, $texto);
+}
 
-    //shell_exec("tar -cvf /home/linux/BackupSquid/Backup-`date +%Y-%d-%m-%H:%M:%S`.tar.gz /etc/squid3/"); #Backup da Pasta do Squid
+function shell($shell, $texto){
+    $saida = shell_exec("$shell; echo $?");
+    $saida = substr("$saida",-2); // Remover o ultimo campo com o espaço
+    if( $saida != 0 ){
+        mensagem($texto);
+        return 0;
+    }
+}
 
-    # Limpar arquivo
+function limparArquivos(){
     shell_exec("echo -n > /etc/squid3/arquivos/liberados.txt"); #Arquivo Liberado
     shell_exec("echo -n > /etc/squid3/arquivos/bloqueados.txt"); #Arquivo bloqueado
     shell_exec("echo -n > /etc/squid3/arquivos/ip/IpBloqueados.txt"); #Arquivo IP Bloqueados
     shell_exec("echo -n > /etc/squid3/arquivos/ip/IpLiberados.txt"); #Arquivo Ip Liberados
-    shell_exec("echo -n > /etc/squid3/body3.conf"); #Arquivo body do squid
+    shell_exec("echo -n > /etc/squid3/body.conf"); #Arquivo body do squid
 
-    shell_exec("rm -rf /etc/squid3/arquivos/grupos/*"); #Limpar pasta do grupo
-    shell_exec("rm -rf /etc/squid3/arquivos/url/*"); #Limpar pasta do url
-    shell_exec("rm -rf /etc/squid3/arquivos/users/*"); #Limpar pasta do users
+    shell_exec("rm -rf /etc/squid3/arquivos/grupos/*"); #Limpar pasta 'grupo'
+    shell_exec("rm -rf /etc/squid3/arquivos/url/*"); # Limpar pasta 'url'
+    shell_exec("rm -rf /etc/squid3/arquivos/users/*"); #Limpar pasta 'users'
+}
 
-    # Arquivo Liberado
-    $result = $mysqli->query("select url as regras from regras WHERE tipo = 'L' and id_grupo is null and id_usuario is null");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"". $dados['regras'] . "\"";
+    ### Busca informações do banco para o arquivo do squid
+    limparArquivos();
+
+    ### Busca sites liberados geral ###
+    $sql = DB::select("select url from regras WHERE tipo = 'L' and id_grupo is null and id_usuario is null");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"$s->url\" ";
         $diretorio = " >> /etc/squid3/arquivos/";
         $arquivo = "liberados.txt";
 
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1001');
-            return ;
-        }
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca de sites liberados entre em contato com o administrator #Error1001');
     }
-    //echo "Arquivo Liberado - " . $i++ . "</br>";
 
-    # Arquivo Bloqueados
-    $result = $mysqli->query("select url as regras from regras WHERE tipo = 'B' and id_grupo is null and id_usuario is null");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"". $dados['regras'] . "\"";
+
+    ## Busca sites bloqueados gereal
+    $sql = DB::select("select url from regras WHERE tipo = 'B' and id_grupo is null and id_usuario is null");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"$s->url\" ";
         $diretorio = " >> /etc/squid3/arquivos/";
         $arquivo = "bloqueados.txt";
 
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1002');
-            return;
-        }
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca de sites bloqueados entre em contato com o administrator #Error1002');
     }
-    //echo "Arquivo Bloqueados - " . $i++. "</br>";
 
-    # Usuario proxy_auth
-    $result = $mysqli->query("SELECT login FROM usuarios");
-    while ($dados = $result->fetch_assoc()) {
-        $linha =  "echo \"acl u_" . $dados['login'] . " proxy_auth " . $dados['login'] . "\"";
-        $diretorio = " >> /etc/squid3/";
-        $arquivo = "body3.conf";
 
-       $res = comando($linha, $diretorio, $arquivo);
+    ## Busca IP's Liberados
+    $sql = DB::select("select ip from ips where tipo = 'L'");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"$s->ip\" ";
+        $diretorio = " >> /etc/squid3/arquivos/ip/";
+        $arquivo = "IpLiberados.txt";
 
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1003');
-            return;
-        }
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca de sites ip`s liberados entre em contato com o administrator #Error1003');
     }
-    //echo "Usuario proxy_auth - " . $i++ . "</br>";
 
-    #  Grupo proxy_auth
-    $result = $mysqli->query("SELECT nome FROM grupos");
-    while ($dados = $result->fetch_assoc()) {
-        $linha =  "echo \"acl g_" . $dados['nome'] . " proxy_auth ";
-        $linha .= "\\\"/etc/squid3/arquivos/grupos/g_" . $dados['nome'] . ".txt\\\"\"";
-        $diretorio = " >> /etc/squid3/";
-        $arquivo = "body3.conf";
 
-        $res = comando($linha, $diretorio, $arquivo);
+    ## Busca IP's Bloqueados
+    $sql = DB::select("select ip from ips where tipo = 'B'");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"$s->ip\" ";
+        $diretorio = " >> /etc/squid3/arquivos/ip/";
+        $arquivo = "IpBloqueados.txt";
 
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1004');
-            return;
-        }
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca de sites ip`s liberados entre em contato com o administrator #Error1004');
     }
-    //echo "Grupo proxy_auth - " . $i++ . "</br>";
 
-    #  Regras Grupos url_regex
-    $result = $mysqli->query("SELECT nome FROM grupos");
-    while ($dados = $result->fetch_assoc()) {
-        $linha =  "echo \"acl rg_" . $dados['nome'] . " url_regex -i ";
-        $linha .= "\\\"/etc/squid3/arquivos/url/rg_" . $dados['nome'] . ".txt\\\"\"";
-        $diretorio = " >> /etc/squid3/";
-        $arquivo = "body3.conf";
 
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1005');
-            return;
-        }
+    ## Busca usuarios para auth
+    $sql = DB::select("SELECT login FROM usuarios");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"acl u_" . $s->login. " proxy_auth " . $s->login . "\"";
+        squid($linha, 'Erro na aplicação na busca dos usuarios entre em contato com o administrator #Error1005');
     }
-    //echo "Regras Grupos url_regex - " . $i++ . "</br>";
 
-    # url_regex Regras Usuarios
-    $result = $mysqli->query("select login as usuario from usuarios");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"acl ru_". $dados['usuario'] . " url_regex -i ";
-        $linha .= "\\\"/etc/squid3/arquivos/users/ru_". $dados['usuario'] . ".txt\\\"\"";
-        $diretorio = " >> /etc/squid3/";
-        $arquivo = "body3.conf";
 
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1006');
-            return;
-        }
+    ## Busca grupos para auth
+    $sql = DB::select("SELECT nome as grupo FROM grupos");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"acl g_" . $s->grupo. " proxy_auth " . $s->grupo . " \\\"/etc/squid3/arquivos/grupos/g_" . $s->grupo . ".txt\\\"\"";
+        squid($linha, 'Erro na aplicação na busca dos grupos entre em contato com o administrator #Error1006');
     }
-    //echo "url_regex Regras Usuarios - " . $i++ . "</br>";
 
+
+    ## Busca usuarios dos grupos
+    $sql = DB::select("select g.nome as grupo, u.login as usuario from grupos g, usuarios u where u.id_grupo = g.id_grupo");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"". $s->usuario . "\" ";
+        $diretorio = ">> /etc/squid3/arquivos/grupos/";
+        $arquivo = "g_". $s->grupo . ".txt";
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca dos usuario para o grupos entre em contato com o administrator #Error1007');
+    }
+
+
+    ## url_regex grupos liberados
+    $sql = DB::select("SELECT nome as grupo FROM grupos");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"acl rgl_" . $s->grupo . " url_regex -i \\\"/etc/squid3/arquivos/url/rgl_" . $s->grupo . ".txt\\\"\"";
+        squid($linha, 'Erro na aplicação na busca dos url_regex do grupo entre em contato com o administrator #Error1008');
+    }
+
+    ## url_regex grupos bloqueados
+    $sql = DB::select("SELECT nome as grupo FROM grupos");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"acl rgb_" . $s->grupo . " url_regex -i \\\"/etc/squid3/arquivos/url/rgb_" . $s->grupo . ".txt\\\"\"";
+        squid($linha, 'Erro na aplicação na busca dos url_regex do grupo entre em contato com o administrator #Error1009');
+    }
+
+
+    ## Busca regras para o grupo liberados
+    $sql = DB::select("select g.nome as grupo, r.url as regras from grupos g, regras r where r.id_grupo = g.id_grupo and tipo = 'L'");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"". $s->regras . "\" ";
+        $diretorio = ">> /etc/squid3/arquivos/url/";
+        $arquivo = "rgl_". $s->grupo . ".txt";
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca das regras para os grupos entre em contato com o administrator #Error1010');
+    }
+
+
+    ## Busca regras para o grupo bloqueadas
+    $sql = DB::select("select g.nome as grupo, r.url as regras from grupos g, regras r where r.id_grupo = g.id_grupo and tipo = 'B'");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"". $s->regras . "\" ";
+        $diretorio = ">> /etc/squid3/arquivos/url/";
+        $arquivo = "rgb_". $s->grupo . ".txt";
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca das regras para os grupos entre em contato com o administrator #Error1011');
+    }
+
+
+    ## url_regex usuario liberados
+    $sql = DB::select("select login as usuario from usuarios");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"acl rul_" . $s->usuario . " url_regex -i \\\"/etc/squid3/arquivos/users/rul_" . $s->usuario . ".txt\\\"\"";
+        squid($linha, 'Erro na aplicação na busca dos url_regex do usuario entre em contato com o administrator #Error1012');
+    }
+
+    ## url_regex usuario bloqueados
+    $sql = DB::select("select login as usuario from usuarios");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"acl rub_" . $s->usuario . " url_regex -i \\\"/etc/squid3/arquivos/users/rub_" . $s->usuario . ".txt\\\"\"";
+        squid($linha, 'Erro na aplicação na busca dos url_regex do usuario entre em contato com o administrator #Error1013');
+    }
+
+
+    ## Busca regras para o usuario liberado
+    $sql = DB::select("select u.login as usuario, r.url regras from usuarios u, regras r where r.id_usuario = u.id_usuario and tipo = 'L'");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"". $s->regras . "\" ";
+        $diretorio = ">> /etc/squid3/arquivos/users/";
+        $arquivo = "rul_". $s->usuario . ".txt";
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca das regras para os usuario entre em contato com o administrator #Error1014');
+    }
+
+
+    ## Busca regras para o usuario bloqueados
+    $sql = DB::select("select u.login as usuario, r.url regras from usuarios u, regras r where r.id_usuario = u.id_usuario and tipo = 'B'");
+    foreach ( $sql as $s ) {
+        $linha = "echo \"". $s->regras . "\" ";
+        $diretorio = ">> /etc/squid3/arquivos/users/";
+        $arquivo = "rub_". $s->usuario . ".txt";
+        $all = $linha . $diretorio . $arquivo;
+        shell($all, 'Erro na aplicação na busca das regras para os usuario entre em contato com o administrator #Error1015');
+    }
+
+
+/*
     # http_access Usuario
     $result = $mysqli->query("SELECT login FROM usuarios");
     while ($dados = $result->fetch_assoc()) {
@@ -163,87 +224,6 @@ function comando($dados, $dir, $arq){
     }
     //echo "http_access Grupo - " . $i++ . "</br>";
 
-    ### Add dados nos arquivos
-    $result = $mysqli->query("select u.login as usuario, r.url regras from usuarios u, regras r where r.id_usuario = u.id_usuario;");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"". $dados['regras'] . "\"";
-        $diretorio = " > /etc/squid3/arquivos/users/";
-        $arquivo = "ru_". $dados['usuario'] . ".txt";
-
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1009');
-            return;
-        }
-    }
-    //echo "Regras para o Usuario - " . $i++ . "</br>";
-
-    ###  Users para o Grupo ###
-    $result = $mysqli->query("select g.nome as grupo, u.login as usuario from grupos g, usuarios u where u.id_grupo = g.id_grupo");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"". $dados['usuario'] . "\"";
-        $diretorio = " >> /etc/squid3/arquivos/grupos/";
-        $arquivo = "g_". $dados['grupo'] . ".txt";
-
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1010');
-            return;
-        }
-    }
-    //echo "Users para o Grupo - " . $i++ . "</br>";
-
-    ###  Regras para o Grupo ###
-    $result = $mysqli->query("select g.nome as grupo, r.url as regras from grupos g, regras r where r.id_grupo = g.id_grupo");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"". $dados['regras'] . "\"";
-        $diretorio = " > /etc/squid3/arquivos/url/";
-        $arquivo = "rg_". $dados['grupo'] . ".txt";
-
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1011');
-            return;
-        }
-    }
-    //echo "Regras para o Grupo  - " . $i++ . "</br>";
-
-    ### Ip's Liberado ###
-    $result = $mysqli->query("select ip from ips where tipo = 'L';");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"". $dados['ip'] . "\"";
-        $diretorio = " > /etc/squid3/arquivos/ip/";
-        $arquivo = "IpLiberados.txt";
-
-
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1012');
-            return;
-        }
-    }
-    //echo "Ips Liberados - " . $i++ . "</br>";
-
-    ### Ip's Bloqueados ###
-    $result = $mysqli->query("select ip from ips where tipo = 'B';");
-    while ($dados = $result->fetch_assoc()) {
-        $linha = "echo \"". $dados['ip'] . "\"";
-        $diretorio = " > /etc/squid3/arquivos/ip/";
-        $arquivo = "IpBloqueados.txt";
-
-
-        $res = comando($linha, $diretorio, $arquivo);
-
-        if( $res != 0 ){
-            erro('Erro na aplicação entre em contato com o administrator #Error1013');
-            return;
-        }
-    }
-    //echo "Ips Bloqueados - " . $i++ . "</br>";
 
 
     ### Arquivo com as configurações final ###

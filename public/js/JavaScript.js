@@ -24,7 +24,8 @@ $(document).ready(function(){
 });
 
 
-$("#conf-update").submit(function(e){
+$(".conf-update").submit(function(e){
+    var form = $(this);
     e.preventDefault();
         swal({
             title: 'Atenção!',
@@ -41,13 +42,14 @@ $("#conf-update").submit(function(e){
 
         },function(isConfirm){
             if (isConfirm) {
-                $('#conf-update').unbind('submit').submit();
+                form.unbind('submit').submit();
             }
         });
 });
 
 
-$("#conf-drop").submit(function(e){
+$(".conf-drop").submit(function(e){
+    var form = $(this);
     e.preventDefault();
     swal({
         title: 'Atenção!',
@@ -64,7 +66,7 @@ $("#conf-drop").submit(function(e){
 
     },function(isConfirm){
         if (isConfirm) {
-            $('#conf-drop').unbind('submit').submit();
+            form.unbind('submit').submit();
         }
     });
 });
