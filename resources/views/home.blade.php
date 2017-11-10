@@ -7,14 +7,14 @@
 
                         <div class="list-group ">
                             <a class="list-group-item">
-                                <i class="fa fa-tasks fa-fw" ></i> SERVICE SAMBA STATUS
-                                <span class="pull-right text-muted small"><em> {{shell_exec("/etc/init.d/samba status | grep start | cut -d ' ' -f8 | cut -c10-  | tr -s ')\"' ' '") }} </em>
+                                <i class="fa fa-tasks fa-fw" ></i> SAMBA STATUS
+                                <span class="pull-right text-muted small"><em> {{shell_exec("systemctl status samba-ad-dc | grep Active | cut -d ' ' -f5") }} </em>
                                 </span>
                             </a>
 
                             <a class="list-group-item">
-                                <i class="fa fa-tasks fa-fw"></i> SERVICE SQUID STATUS
-                                <span class="pull-right text-muted small"><em> {{shell_exec("/etc/init.d/squid3 status | grep start | cut -d ' ' -f8 | cut -c10-  | tr -s ')\"' ' '") }} </em>
+                                <i class="fa fa-tasks fa-fw"></i> SQUID STATUS
+                                <span class="pull-right text-muted small"><em> {{shell_exec("systemctl status squid3 | grep Active | cut -d ' ' -f5") }} </em>
                                 </span>
                             </a>
 
@@ -38,7 +38,7 @@
                             </a>
 
                             <a class="list-group-item">
-                                <i class="fa fa-tasks fa-fw"></i> Disco
+                                <i class="fa fa-tasks fa-fw"></i> Disco Rigido
                                 <span class="pull-right text-muted small"><em> {{ shell_exec("") }} {{ shell_exec(" df -Th | grep /dev/sd | tr -s ' ' | cut -d ' ' -f5") }} / {{ shell_exec(" df -Th | grep /dev/sd | tr -s ' ' | cut -d ' ' -f3") }} - {{ shell_exec("df -Th | grep /dev/sd | tr -s ' ' | cut -d ' ' -f2 | tr [a-x] [A-Z]") }}</em>
                                 </span>
                             </a>

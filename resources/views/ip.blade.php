@@ -47,11 +47,12 @@
                 </tbody>
             </table>
         </div>
-
         <div class="col-md-offset-5">
             {{ $ips->render() }}
         </div>
     @endif
+
+    <h5><span class="label label-default">Os Ip`s liberados ou bloqueados sobrescreve as regras geral do grupo e do usuario sem removê-lo do proxy</span></h5>
 
 @endsection
 @include('widgets.panel', array('class'=>'primary', 'header'=>true, 'as'=>'panel2'))
