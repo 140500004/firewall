@@ -12,7 +12,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="{{ url ('') }}"> Firewall </a>
+                <a class="navbar-brand" href="{{ url ('') }}"> ProTector </a>
             </div>
             <!-- /.navbar-header -->
 
@@ -70,9 +70,9 @@
                                     <a href="{{ url ('ajustes') }}"> Ajustes</a>
                                 </li>
 
-                                <li {{ (Request::is('*logs') ? 'class="active"' : '') }}>
-                                    <a href="{{ url ('logs') }}"> Logs do Squid</a>
-                                </li>
+                                <!-- <li { (Request::is('*logs') ? 'class="active"' : '') }}>
+                                    <a href="{ url ('logs') }}"> Logs do Squid</a>
+                                </li> -->
 
                             </ul>
                         </li>

@@ -34,7 +34,7 @@
                     @foreach ( $ips as $ip )
                         <tr class=".table-hover">
                             <td>{{ $ip->ip }}</td>
-                            <td>{{ $ip->tipo }}</td>
+                            <td>{{ $ip->tipo  == 'L' ? 'LIBERADO' : 'BLOQUEADO' }}</td>
                             <td>{{ $ip->descricao }}</td>
                             <td>
                                 <a class="btn btn-primary" href="{{ route('ip.edit',$ip->id_ip) }}">Editar</a>
