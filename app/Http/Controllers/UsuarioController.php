@@ -38,6 +38,8 @@ class UsuarioController extends Controller {
 	public function store(Request $request){
         $campos = $request->all();
 
+        $campos['login'] = strtolower($campos['login']);
+
         $this->validate($request,[
             'nome' => 'required',
             'login' => 'required|unique:usuarios',
@@ -48,32 +50,46 @@ class UsuarioController extends Controller {
             'senhac.same' => 'Senha não consiste'
         ]);
 
-        $campos['senha'] = bcrypt($campos['senha']);
-
         // Busca nome do grupo para samba
         $nomeGrupo = DB::select('select nome as grupo from grupos where id_grupo = ' .$campos['id_grupo']);
         $nomeGrupo = $nomeGrupo[0]->grupo;
 
+        echo "</br>";
+        echo "Criar usuario:  /usr/local/samba/bin/samba-tool user create " . $campos['login'] . " --given-name=" . $campos['nome'] . " password='" . $campos['senha'] . "'; echo $?";
+        echo "</br>";
+        echo "Redefini Senha: /usr/local/samba/bin/samba-tool user setpassword '" . $campos['login'] . "' --newpassword='" . $campos['senha'] . "' --must-change-at-next-login; echo $?";
+        echo "</br>";
+        echo "Add ao grupo: /usr/local/samba/bin/samba-tool group addmembers '" . $nomeGrupo . "' '". $campos['login'] . "'; echo $?";
+        echo "</br>";
+        //return;
+
+
         # Criar Usuario
-        $saida1 = shell_exec("/usr/local/samba/bin/samba-tool user create '" . $campos['login'] . "' --given-name='" . $campos['nome'] . "' password='" . $campos['senha'] . "'; echo $?");
+        $saida1 = shell_exec("/usr/local/samba/bin/samba-tool user create " . $campos['login'] . " --given-name=" . $campos['nome'] . " password='" . $campos['senha'] . "'; echo $?");
+
         # Redefini Senha
         $saida2 = shell_exec("/usr/local/samba/bin/samba-tool user setpassword '" . $campos['login'] . "' --newpassword='" . $campos['senha'] . "' --must-change-at-next-login; echo $?");
+
         # Add ao grupo
         $saida3 = shell_exec("/usr/local/samba/bin/samba-tool group addmembers '" . $nomeGrupo . "' '". $campos['login'] . "'; echo $?");
+
 
         $saida1 = substr("$saida1",-2);
         $saida2 = substr("$saida3",-2);
         $saida3 = substr("$saida3",-2);
 
         if( $saida1 != 0 ){
-            return back()->with('error','Alguma coisa deu errado no samba para criar o usuario \'' . $campos['nome'] . '\' entre em contato com o administrador #Erro 1201 ');
+            return back()->with('error','Usuario \'' . $campos['nome'] . '\' invalido entre em contato com o administrador #Erro 1201 ');
         }
         if( $saida2 != 0 ){
-            return back()->with('error','Alguma coisa deu errado no samba para criar a senha do usuario \'' . $campos['nome'] . '\' entre em contato com o administrador #Erro 1202 ');
+            //return back()->with('error','Alguma coisa deu errado no samba para criar a senha do usuario \'' . $campos['nome'] . '\' entre em contato com o administrador #Erro 1202 ');
+            return back()->with('error','Senha fraca, utilizar uma senha mais forte para o usuario \'' . $campos['nome'] . '\'');
         }
         if( $saida3 != 0 ){
             return back()->with('error','Alguma coisa deu errado no samba para adicionar no grupo \'' . $nomeGrupo . '\' entre em contato com o administrador #Erro 1203 ');
         }
+
+        $campos['senha'] = bcrypt($campos['senha']);
 
         Usuario::create($campos);
         return back()->with('success',' Usuario \'' . $campos['nome'] . '\' criado com sucesso');

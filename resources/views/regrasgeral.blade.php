@@ -78,7 +78,7 @@
 
                         {{ Form::label('', '', array('class' => 'input-group-btn')) }}
 
-                        {{ Form::open(['method' => 'DELETE','route' => ['regras.destroy', $r->id_regras], 'class' => 'conf-drop'])}}
+                        {{ Form::model('regras', ['method' => 'DELETE','route' => ['regras.destroy', $r->id_regras], 'class' => 'conf-drop'])}}
                         {{ Form::submit('Deletar', ['class' => 'form-control btn-danger']) }}
                         {{ Form::close() }}
                     </div>

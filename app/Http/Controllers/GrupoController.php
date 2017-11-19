@@ -46,6 +46,9 @@ class GrupoController extends Controller {
 	public function store(Request $request){
 
 	    $nome = $request->all();
+
+        $nome['nome'] = strtolower($nome['nome']);
+
         $this->validate($request,[
             'nome' => 'required|unique:grupos|filled'
         ],

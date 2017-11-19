@@ -236,7 +236,7 @@ function limparArquivos(){
 
     ## Restart squid
     $linha = "/etc/init.d/squid3 force-reload";
+
     $texto = "Erro na aplicação ao restart o squid entre em contato com o administrator #Error1021";
     shell($linha, $texto);
-
     ## FIM

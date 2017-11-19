@@ -9,7 +9,7 @@
                 </div>
                 <div class="modal-body">
                     {{ Form::open(array('url' => 'grupo')) }}
-                    {{ Form::text('nome', null, ['class' => 'form-control', 'placeholder' => 'Nome do Grupo', 'autocomplete' => 'off', 'required' => 'required'])}}
+                    {{ Form::text('nome', null, ['class' => 'form-control', 'placeholder' => 'Nome do Grupo', 'required' => 'required'])}}
                     {{ Form::token() }}
                 </div>
                 <div class="modal-footer">
@@ -45,12 +45,15 @@
 
                     <div class="form-group">
                         {{ Form::label('senha') }}
-                        <input class="form-control" min="6" placeholder="Nova Senha" name="senha" type="password", required>
+                        <input class="form-control senha" min="6" id="senha" placeholder="Nova Senha" name="senha" onkeyup="validaSenha()" type="password" required>
+                        <label class="label label-danger" id="senhat"> </label>
                     </div>
+
 
                     <div class="form-group">
                     {{ Form::label('Confirme a Senha') }}
-                        <input class="form-control" min="6" placeholder="Confirme a Senha" name="senhac" type="password", required>
+                        <input class="form-control senhac" min="6" id="senhac" placeholder="Confirme a Senha" onkeyup="ConfirmeSenha()" name="senhac" type="password" required>
+                        <label class="label label-danger" id="senhact"> </label>
                     </div>
 
                     <div class="form-group">
